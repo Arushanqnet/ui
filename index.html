@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Profile UI</title>
+<style>
+    body {
+        margin: 0;
+        font-family: sans-serif;
+        background: #f5f5f5;
+        color: #333;
+    }
+
+    /* Header/Nav */
+    .header {
+        display: flex;
+        align-items: center;
+        padding: 10px 20px;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .header .logo {
+        font-weight: 700;
+        font-size: 18px;
+        color: #7F3DFF;
+        text-decoration: none;
+        margin-right: auto;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        overflow: hidden;
+        padding: 20px;
+    }
+
+    /* General Buttons and Links */
+    .upload-cover,
+    .edit-button,
+    .add-new-button {
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        font-weight: 600;
+        color: #7F3DFF;
+        background: none;
+        border: 1px solid #7F3DFF;
+        border-radius: 4px;
+        padding: 4px 10px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .upload-cover:hover,
+    .edit-button:hover,
+    .add-new-button:hover {
+        background: #7F3DFF;
+        color: #fff;
+    }
+
+    .section-title {
+        font-size: 16px;
+        font-weight: 700;
+        margin: 30px 0 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .section-title .edit-button,
+    .section-title .add-new-button {
+        font-size: 12px;
+        padding: 4px 8px;
+        margin-left: auto;
+    }
+
+    .profile-header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .profile-image-container {
+        width: 120px;
+        height: 120px;
+        border-radius: 8px;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    .profile-image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .profile-info {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .profile-info h2 {
+        margin: 0 0 5px;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .profile-info p {
+        margin: 2px 0;
+        font-size: 14px;
+        color: #666;
+    }
+
+    .profile-info .edit-button {
+        margin-top: 10px;
+        border: 1px solid #7F3DFF;
+    }
+
+    .section {
+        margin-top: 20px;
+    }
+
+    .section label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    .editable-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .editable-row input[type="text"],
+    .editable-row textarea {
+        width: 100%;
+        max-width: 100%;
+        padding: 8px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+        background: #fefefe;
+        color: #333;
+    }
+
+    .language-options {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .language-tag {
+        display: inline-block;
+        background: #f0f0f0;
+        border-radius: 4px;
+        padding: 6px 10px;
+        font-size: 14px;
+        color: #333;
+    }
+
+    /* Organization Details */
+    .org-details-container {
+        border: 1px solid #eee;
+        border-radius: 8px;
+        padding: 20px;
+        background: #fafafa;
+        margin-top: 10px;
+    }
+
+    .org-details-container p {
+        margin: 5px 0;
+        font-size: 14px;
+    }
+
+    .org-details-container p span {
+        font-weight: 600;
+    }
+
+    /* Contact & Social Media Details */
+    .details-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-top: 15px;
+    }
+
+    .detail-item {
+        flex: 1;
+        min-width: 200px;
+        background: #fefefe;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .detail-item-icon {
+        width: 24px;
+        height: 24px;
+        background: #7F3DFF;
+        border-radius: 4px;
+        flex-shrink: 0;
+    }
+
+    .detail-item-text {
+        font-size: 14px;
+        color: #333;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Featured Listings */
+    .listings-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .listing-card {
+        background: #fff;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .listing-image {
+        width: 100%;
+        height: 150px;
+        overflow: hidden;
+    }
+
+    .listing-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .listing-badge {
+        position: absolute;
+        background: #7F3DFF;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 4px 8px;
+        border-radius: 4px;
+        top: 10px;
+        left: 10px;
+    }
+
+    .listing-content {
+        padding: 10px;
+        position: relative;
+    }
+
+    .listing-content h3 {
+        font-size: 14px;
+        margin: 0 0 10px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .listing-icons {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 12px;
+        color: #666;
+        margin-bottom: 10px;
+    }
+
+    .listing-icons span {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .listing-price {
+        font-size: 16px;
+        font-weight: 700;
+        color: #333;
+    }
+
+    /* Responsive behavior */
+    @media (max-width: 480px) {
+        .profile-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .profile-info h2 {
+            font-size: 18px;
+        }
+
+        .edit-button {
+            margin-top: 6px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<header class="header">
+    <a href="#" class="logo">Breezz</a>
+</header>
+
+<div class="container">
+    <a href="#" class="upload-cover">UPLOAD COVER IMAGE</a>
+
+    <div class="profile-header">
+        <div class="profile-image-container">
+            <img src="https://via.placeholder.com/150" alt="Profile Image">
+        </div>
+        <div class="profile-info">
+            <h2>Ronald K.</h2>
+            <p>Real Estate Agent</p>
+            <p>Toronto, Ontario</p>
+            <a href="#" class="edit-button">EDIT</a>
+        </div>
+    </div>
+
+    <div class="section">
+        <label for="breezz-url">Breezz Website URL</label>
+        <div class="editable-row">
+            <input type="text" id="breezz-url" value="breezz.ca/ronald" />
+            <a href="#" class="edit-button">EDIT</a>
+        </div>
+    </div>
+
+    <div class="section">
+        <label for="about">About</label>
+        <div class="editable-row">
+            <textarea id="about" rows="5">
+I’m with over 10 years of experience in the real estate industry, I am passionate about helping clients navigate the exciting journey of buying, selling, or investing in property. My mission is to provide exceptional service, tailored strategies, and an in-depth understanding of the market to help you achieve your real estate goals.
+            </textarea>
+            <a href="#" class="edit-button">EDIT</a>
+        </div>
+    </div>
+
+    <div class="section">
+        <label>Language</label>
+        <div class="language-options">
+            <div class="language-tag">English</div>
+            <div class="language-tag">French</div>
+        </div>
+    </div>
+
+    <!-- Organization Details -->
+    <div class="section-title">
+        Organization Details
+        <a href="#" class="edit-button">EDIT</a>
+    </div>
+    <div class="org-details-container">
+        <p><span>Type:</span> Firm</p>
+        <p><span>Designation:</span> Brokerage</p>
+        <p><span>Address:</span> 2911 Kennedy Road, Toronto, Ontario M1V1s8</p>
+        <p><span>Show Address:</span> Yes</p>
+    </div>
+
+    <!-- Contact Details -->
+    <div class="section-title">
+        Contact Details
+        <a href="#" class="add-new-button">ADD NEW</a>
+        <a href="#" class="edit-button">EDIT</a>
+    </div>
+    <div class="details-row">
+        <div class="detail-item">
+            <div class="detail-item-icon" title="Website"></div>
+            <div class="detail-item-text">ronald.me</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-item-icon" title="Call"></div>
+            <div class="detail-item-text">+94 77 676 7546</div>
+        </div>
+    </div>
+    <div class="details-row">
+        <div class="detail-item">
+            <div class="detail-item-icon" title="Address"></div>
+            <div class="detail-item-text">Toronto, Canada</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-item-icon" title="Email"></div>
+            <div class="detail-item-text">ronald@realtor.ca</div>
+        </div>
+    </div>
+
+    <!-- Social Media -->
+    <div class="section-title">
+        Social Media
+        <a href="#" class="add-new-button">ADD NEW</a>
+        <a href="#" class="edit-button">EDIT</a>
+    </div>
+    <div class="details-row">
+        <div class="detail-item">
+            <div class="detail-item-icon" title="LinkedIn"></div>
+            <div class="detail-item-text">/ronald</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-item-icon" title="Facebook"></div>
+            <div class="detail-item-text">/ronald</div>
+        </div>
+    </div>
+    <div class="details-row">
+        <div class="detail-item">
+            <div class="detail-item-icon" title="Instagram"></div>
+            <div class="detail-item-text">/ronald</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-item-icon" title="Youtube"></div>
+            <div class="detail-item-text">/ronald</div>
+        </div>
+    </div>
+
+    <!-- Featured Listings -->
+    <div class="section-title">
+        Featured Listings
+    </div>
+    <div class="listings-grid">
+        <!-- Listing Card 1 -->
+        <div class="listing-card">
+            <div class="listing-image">
+                <img src="https://via.placeholder.com/300x200" alt="Listing Image">
+            </div>
+            <div class="listing-content">
+                <div class="listing-badge">FOR SALE</div>
+                <h3>PH3 1276 Maple Crossing Blvd- Burlington</h3>
+                <div class="listing-icons">
+                    <span>3 Beds</span>
+                    <span>2 Baths</span>
+                    <span>1 Car</span>
+                </div>
+                <div class="listing-price">$132,999</div>
+            </div>
+        </div>
+
+        <!-- Listing Card 2 -->
+        <div class="listing-card">
+            <div class="listing-image">
+                <img src="https://via.placeholder.com/300x200" alt="Listing Image">
+            </div>
+            <div class="listing-content">
+                <div class="listing-badge">FOR SALE</div>
+                <h3>412 Oak Avenue, Vancouver, BC V6B 3K3</h3>
+                <div class="listing-icons">
+                    <span>2 Beds</span>
+                    <span>2 Baths</span>
+                    <span>1 Car</span>
+                </div>
+                <div class="listing-price">$110,000</div>
+            </div>
+        </div>
+
+        <!-- Listing Card 3 -->
+        <div class="listing-card">
+            <div class="listing-image">
+                <img src="https://via.placeholder.com/300x200" alt="Listing Image">
+            </div>
+            <div class="listing-content">
+                <div class="listing-badge">FOR SALE</div>
+                <h3>812 Birch Crescent, Calgary, AB T2P 5E3, Canada</h3>
+                <div class="listing-icons">
+                    <span>4 Beds</span>
+                    <span>3 Baths</span>
+                    <span>1 Car</span>
+                </div>
+                <div class="listing-price">$144,999</div>
+            </div>
+        </div>
+
+        <!-- Listing Card 4 -->
+        <div class="listing-card">
+            <div class="listing-image">
+                <img src="https://via.placeholder.com/300x200" alt="Listing Image">
+            </div>
+            <div class="listing-content">
+                <div class="listing-badge">FOR SALE</div>
+                <h3>129 Pine Road, Ottawa, ON K1P 1J1, Canada</h3>
+                <div class="listing-icons">
+                    <span>3 Beds</span>
+                    <span>3 Baths</span>
+                    <span>1 Car</span>
+                </div>
+                <div class="listing-price">$282,999</div>
+            </div>
+        </div>
+
+        <!-- Listing Card 5 -->
+        <div class="listing-card">
+            <div class="listing-image">
+                <img src="https://via.placeholder.com/300x200" alt="Listing Image">
+            </div>
+            <div class="listing-content">
+                <div class="listing-badge">FOR SALE</div>
+                <h3>305 Cedar Lane, Edmonton, AB T5J 2G8, Canada</h3>
+                <div class="listing-icons">
+                    <span>5 Beds</span>
+                    <span>4 Baths</span>
+                    <span>1 Car</span>
+                </div>
+                <div class="listing-price">$118,999</div>
+            </div>
+        </div>
+
+        <!-- Listing Card 6 -->
+        <div class="listing-card">
+            <div class="listing-image">
+                <img src="https://via.placeholder.com/300x200" alt="Listing Image">
+            </div>
+            <div class="listing-content">
+                <div class="listing-badge">FOR SALE</div>
+                <h3>945 Elm Drive, Montreal, QC H3B 4J8, Canada</h3>
+                <div class="listing-icons">
+                    <span>6 Beds</span>
+                    <span>4 Baths</span>
+                    <span>1 Car</span>
+                </div>
+                <div class="listing-price">$145,999</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
